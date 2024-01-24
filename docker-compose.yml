@@ -1,0 +1,25 @@
+version: '3'
+services:
+  mongodb:
+    image: 'mongo:latest'
+    restart: unless-stopped
+    ports:
+      - 27017:27017
+    volumes:
+      - ./data:/data/mongodb
+    env_file:
+      - .env
+
+  server:
+    container_name: server
+    restart: unless-stopped
+    build:
+      dockerfile: Dockerfile.dev
+      context: .
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/app
+      - /app/node_modules
+    env_file:
+      - .env

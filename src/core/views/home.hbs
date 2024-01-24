@@ -1,0 +1,53 @@
+<html lang='en'>
+	<head>
+		<meta charset='UTF-8' />
+		<meta name='viewport' content='width=device-width, initial-scale=1.0' />
+		<title>Document</title>
+		<script src='https://cdn.tailwindcss.com'></script>
+	</head>
+	<body
+		class='h-screen w-full bg-black text-white flex flex-col justify-center items-center'>
+		<div class='text-2xl font-bold'>
+			{{title}}
+		</div>
+		<div class="flex flex-col gap-2 bg-gray-800 px-4 py-2 mt-8 rounded-lg justify-center items-center">
+			<img src="{{user.avatar}}" alt="" class="w-24 h-24 rounded-full">
+				<span>username: {{user.userName}}</span>
+				<span>email: {{user.email}}</span>
+				<span>provider: {{user.provider}}</span>
+		</div>
+		<div class='flex flex-col gap-2 mt-8'>
+			<button id="logout" class='bg-red-700 px-4 py-2 rounded-lg'>
+				Logout
+			</button>
+		</div>
+	</body>
+
+	<script>
+		const logoutButton = document.getElementById('logout');
+		const isLoggedIn = document.cookie.includes('jwt'); 
+
+		if (!isLoggedIn) {
+			window.location.href = '/auth'; 
+		} 
+
+		const logout = async () => {
+			const res = await fetch('http://localhost:3000/account/github/logout', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `Bearer ${document.cookie.split('=')[1]}`,
+				},
+				credentials: 'include',
+			});
+
+			if (res.status === 200) {
+				window.location.href = '/auth';
+			}
+		}
+
+		logoutButton.addEventListener('click', async () => {
+			await logout()
+		});
+	</script>
+</html>
